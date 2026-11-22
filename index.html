@@ -4854,6 +4854,10 @@ document.addEventListener("click",event=>{
         saveState();
         renderCurrentPage();
 
+        if(state.onboardStep===2){
+          renderOnboarding();
+        }
+
         toast("تم حذف القسط");
       }
     );
@@ -4893,6 +4897,11 @@ document.addEventListener("click",event=>{
 
   if(action==="save-settings"){
     saveSettings();
+    return;
+  }
+
+  if(action==="send-chat"){
+    sendChat();
     return;
   }
 
