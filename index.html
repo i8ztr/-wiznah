@@ -4,7 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#0b0b10">
-<title>وِزنة</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="وِزنة">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>وِزنة — مساعدك المالي</title>
 
 <style>
 :root{
@@ -62,6 +67,22 @@ button{
     var(--bg);
   overflow:hidden;
 }
+
+/* =========================
+   SMS IMPORT
+========================= */
+.sms-card{padding:18px;margin-bottom:12px}
+.sms-step{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border)}
+.sms-step:last-child{border-bottom:0}
+.sms-num{width:32px;height:32px;flex:0 0 32px;border-radius:12px;background:rgba(139,92,246,.16);color:var(--purple2);display:flex;align-items:center;justify-content:center;font-weight:900}
+.sms-code{direction:ltr;text-align:left;word-break:break-all;background:#08080c;border:1px solid var(--border);padding:12px;border-radius:14px;font-size:12px;color:#d8d8e5;margin-top:10px}
+.sms-badge{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:rgba(53,211,153,.10);color:var(--green);font-size:12px;font-weight:800}
+.sms-hero{padding:20px;margin-bottom:12px;background:linear-gradient(145deg,rgba(139,92,246,.16),rgba(18,18,24,.96));border:1px solid rgba(139,92,246,.18)}
+.sms-hero-title{font-size:20px;font-weight:950;margin:10px 0 6px}
+.sms-hero-sub{color:var(--muted);font-size:13px;line-height:1.8}
+.sms-open-btn{width:100%;margin-top:16px;padding:14px 16px;border-radius:16px;background:linear-gradient(135deg,#8b5cf6,#6d45d8);color:#fff;font-weight:950;font-size:15px;box-shadow:0 12px 30px rgba(139,92,246,.22)}
+.sms-open-btn:active{transform:scale(.985)}
+.sms-note{font-size:12px;color:var(--muted);line-height:1.7;margin-top:10px}
 
 /* =========================
    COMMON
@@ -941,7 +962,8 @@ button{
 
 .chat-area{
   flex:1;
-  overflow-y:auto;
+  min-height:0;
+  overflow-y:auto !important;
   padding:12px 18px 10px;
   scrollbar-width:none;
 }
@@ -1191,14 +1213,123 @@ dialog::backdrop{
     border-right:1px solid #17171d;
   }
 }
+
+/* V28: lively micro-interactions and daily pulse */
+@keyframes wiznahFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes wiznahGlow{0%,100%{box-shadow:0 0 0 rgba(139,92,246,0)}50%{box-shadow:0 0 24px rgba(139,92,246,.16)}}
+@keyframes wiznahIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.wiz-pulse{margin-top:10px;padding:14px 15px;position:relative;overflow:hidden;animation:wiznahIn .35s ease both}
+.wiz-pulse::after{content:"";position:absolute;inset:-40px auto auto -30px;width:120px;height:120px;background:radial-gradient(circle,rgba(139,92,246,.18),transparent 68%);pointer-events:none}
+.wiz-pulse-top{display:flex;align-items:center;justify-content:space-between;gap:12px;position:relative;z-index:1}
+.wiz-pulse-title{font-size:14px;font-weight:900}
+.wiz-pulse-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.wiz-pulse-badge{width:42px;height:42px;border-radius:15px;background:rgba(139,92,246,.12);display:flex;align-items:center;justify-content:center;font-size:22px;animation:wiznahFloat 2.6s ease-in-out infinite}
+.wiz-pulse-main{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px;position:relative;z-index:1}
+.wiz-pulse-stat{background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.05);border-radius:15px;padding:10px}
+.wiz-pulse-stat span{display:block;color:var(--muted);font-size:10px}
+.wiz-pulse-stat strong{display:block;font-size:17px;margin-top:3px}
+.wiz-pulse-message{margin-top:9px;padding:9px 10px;border-radius:13px;background:rgba(53,211,153,.07);color:#dffcf1;font-size:11px;line-height:1.6;position:relative;z-index:1}
+.wiz-pulse.warn .wiz-pulse-message{background:rgba(251,191,36,.08);color:#fff4cf}
+.wiz-pulse.bad .wiz-pulse-message{background:rgba(251,113,133,.08);color:#ffe1e6}
+.wiz-pulse.good{animation:wiznahIn .35s ease both,wiznahGlow 3s ease-in-out 1}
+#home .safe-card{animation:wiznahIn .35s ease both}
+#home .quick-actions-home .btn{transition:transform .16s ease,box-shadow .2s ease}
+#home .quick-actions-home .btn:active{transform:scale(.97)}
+
+/* V27: natural scrolling everywhere — onboarding and every app screen */
+.screen:not(#onboarding){
+  overflow:hidden !important;
+}
+.screen:not(#onboarding) .page,
+.screen:not(#onboarding) .assistant-page{
+  position:relative;
+  height:100% !important;
+  min-height:0 !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-y;
+  overscroll-behavior-y:contain;
+  padding-bottom:96px;
+}
+.screen:not(#onboarding) .scroll-area{
+  flex:none !important;
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  overflow:visible !important;
+  padding-bottom:120px;
+}
+/* Home is intentionally scrollable too. */
+#home .page{
+  min-height:100% !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-y;
+  padding-bottom:96px !important;
+}
+#home .home-scroll{
+  flex:none !important;
+  min-height:auto !important;
+  overflow:visible !important;
+  padding-bottom:18px;
+}
+/* Keep bottom navigation visible while content moves underneath it. */
+.screen:not(#onboarding) .bottom-nav{
+  position:fixed !important;
+  left:50% !important;
+  right:auto !important;
+  bottom:0 !important;
+  width:100% !important;
+  max-width:520px !important;
+  transform:translateX(-50%);
+  z-index:50;
+}
+#home .envelopes{overflow-x:auto;overflow-y:hidden;display:flex;gap:9px}
+#home .envelope{min-width:138px}
+#home .envelope:nth-child(n){display:block}
+/* Onboarding remains compact, but can scroll on small phones. */
+#onboarding{overflow-y:auto !important;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+#onboarding .onboard-box{margin:auto}
+/* Better tap feedback */
+button{touch-action:manipulation}
 </style>
+<style>
 
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="وِزنة">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+/* V22 final home-fit rules: Home never scrolls; short screens prioritize core money info. */
+@media (max-height:740px){
+  #home .goal-mini{display:none!important}
+  #home .insight{display:none!important}
+  #home .score-card{padding:9px 11px}
+  #home .score-ring{width:50px;height:50px}
+  #home .section-head{margin-top:6px;margin-bottom:4px}
+  #home .envelope{padding:9px}
+  #home .env-money{margin-top:5px;font-size:15px}
+  #home .progress{margin-top:5px}
+}
+@media (max-height:620px){
+  #home .score-card{display:none!important}
+  #home .greeting{margin-bottom:6px}
+  #home .greeting-name{font-size:18px}
+  #home .home-settings{width:36px;height:36px}
+  #home .safe-card{padding:11px 13px}
+  #home .safe-number{font-size:27px}
+  #home .safe-meta{margin-top:6px;gap:5px}
+  #home .pill{padding:5px 8px;font-size:10px}
+  #home .home-grid{margin-top:5px;gap:6px}
+  #home .mini-card{min-height:58px;padding:8px}
+  #home .mini-value{font-size:18px}
+  #home .envelopes{gap:6px}
+  #home .envelope{padding:8px}
+  #home .env-icon{font-size:16px}
+  #home .env-name{font-size:10px}
+  #home .env-money{font-size:13px}
+  #home .ask-card{padding:8px 10px}
+  #home .ask-icon{width:36px;height:36px;font-size:18px}
+}
 
+</style>
 </head>
 
 <body>
@@ -1245,7 +1376,7 @@ dialog::backdrop{
         <div class="greeting">
           <div>
             <div class="greeting-small" id="greetingSmall">مساء الخير</div>
-            <div class="greeting-name">وضعك المالي 👋</div>
+            <div class="greeting-name" id="greetingName">وضعك المالي 👋</div>
           </div>
 
           <button type="button" class="home-settings" data-action="settings">
@@ -1270,6 +1401,9 @@ dialog::backdrop{
             <div class="pill">
               💳 <span id="monthlyDebtHome">0</span> أقساط
             </div>
+            <div class="pill">
+              🔥 <span id="dailySafeHome">0</span> ر.س/يوم
+            </div>
           </div>
 
           <div class="insight">
@@ -1280,6 +1414,13 @@ dialog::backdrop{
           </div>
 
         </div>
+
+        <div class="quick-actions-home" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+          <button type="button" class="btn btn-primary" style="min-height:44px" data-action="quick-expense">＋ تسجيل مصروف</button>
+          <button type="button" class="btn btn-secondary" style="min-height:44px" data-action="purchase-check">🛍️ أقدر أشتري؟</button>
+        </div>
+
+        <div id="homePulse" class="card wiz-pulse good"></div>
 
         <div class="home-grid">
 
@@ -1497,13 +1638,15 @@ dialog::backdrop{
       <div class="scroll-area">
 
         <div class="card savings-hero">
-          <div class="savings-hero-title">المتاح المتوقع للادخار شهريًا</div>
-          <div class="savings-hero-value">
-            <span id="availableSaving">0</span> ر.س
+          <div class="savings-hero-title">المتاح الآمن بعد الادخار</div>
+          <div class="savings-hero-value"><span id="availableSaving">0</span> ر.س</div>
+          <div class="savings-hero-desc" id="savingHeroDesc">يعتمد على راتبك والتزاماتك وأقساطك ومحافظك.</div>
+          <div class="saving-wallet">
+            <button type="button" class="btn btn-primary" data-action="add-saving-money">+ أضفت للادخار</button>
+            <button type="button" class="btn btn-secondary" data-action="withdraw-saving-money">↩ سحب من الادخار</button>
           </div>
-          <div class="savings-hero-desc" id="savingHeroDesc">
-            يعتمد على راتبك والتزاماتك وأقساطك ومحافظك.
-          </div>
+          <div style="margin-top:10px;color:var(--muted);font-size:10px">أي مبلغ تدخره ينخصم فورًا من المتاح لهذا الشهر ويُضاف لمحفظة الادخار. لا يُحسب كمصروف.</div>
+          <div style="margin-top:10px"><div class="savings-hero-title">إجمالي المدخر الآن</div><div class="saved-balance"><span id="totalSavedNow">0</span> ر.س</div></div><div style="margin-top:12px;padding:11px;border-radius:14px;background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.12)"><div class="savings-hero-title">المتاح الفعلي من راتبك هذا الشهر</div><div class="saved-balance"><span id="cashAvailableNow">0</span> ر.س</div></div>
         </div>
 
         <div id="savingsList" class="list"></div>
@@ -1549,6 +1692,11 @@ dialog::backdrop{
             <div>←</div>
           </button>
 
+          <button type="button" class="card row-card" data-action="analysis">
+            <div class="row-icon">📈</div>
+            <div class="row-main"><div class="row-name">وين راحت فلوسي؟</div><div class="row-sub">تحليل مصروفاتك هذا الشهر</div></div><div>←</div>
+          </button>
+
           <button type="button" class="card row-card" data-action="activity">
             <div class="row-icon">📊</div>
             <div class="row-main">
@@ -1556,6 +1704,29 @@ dialog::backdrop{
               <div class="row-sub">شوف كل دخلك ومصاريفك</div>
             </div>
             <div>←</div>
+          </button>
+
+          <button type="button" class="card row-card" data-action="sms-import">
+            <div class="row-icon">📩</div>
+            <div class="row-main">
+              <div class="row-name">المصاريف تلقائيًا من الرسائل</div>
+              <div class="row-sub">خل وِزنة تقرأ رسالة البنك وتسجل العملية</div>
+            </div>
+            <div>←</div>
+          </button>
+
+          <button type="button" class="card row-card" data-action="quick-income">
+            <div class="row-icon">💵</div>
+            <div class="row-main">
+              <div class="row-name">تسجيل دخل</div>
+              <div class="row-sub">مكافأة، عمولة، تحويل أو دخل إضافي</div>
+            </div>
+            <div>←</div>
+          </button>
+
+          <button type="button" class="card row-card" data-action="backup">
+            <div class="row-icon">💾</div>
+            <div class="row-main"><div class="row-name">نسخ احتياطي</div><div class="row-sub">احفظ بياناتك واستعدها على جهاز آخر</div></div><div>←</div>
           </button>
 
           <button type="button" class="card row-card" data-action="settings">
@@ -1582,6 +1753,26 @@ dialog::backdrop{
     </div>
   </section>
 
+
+  <!-- =========================
+       ANALYSIS
+  ========================== -->
+  <section id="analysis" class="screen">
+    <div class="page">
+      <div class="page-header">
+        <div><div class="page-title">وين راحت فلوسي؟</div><div class="page-subtitle">تحليل هذا الشهر</div></div>
+        <button type="button" class="icon-btn" data-action="back-more">→</button>
+      </div>
+      <div class="scroll-area">
+        <div class="card" style="padding:18px;margin-bottom:10px">
+          <div style="color:var(--muted);font-size:12px">إجمالي المصروف</div>
+          <div id="analysisTotal" style="font-size:30px;font-weight:950;margin-top:4px">0 ر.س</div>
+          <div id="analysisDaily" style="color:var(--muted);font-size:11px;margin-top:5px">—</div>
+        </div>
+        <div id="analysisList" class="list"></div>
+      </div>
+    </div>
+  </section>
 
   <!-- =========================
        ACTIVITY
@@ -1637,6 +1828,11 @@ dialog::backdrop{
           </div>
 
           <div class="form-group">
+            <label class="label">دخل إضافي هذا الشهر</label>
+            <input id="settingsExtraIncome" class="input" type="number" inputmode="decimal" placeholder="0">
+          </div>
+
+          <div class="form-group">
             <label class="label">يوم نزول الراتب</label>
             <input id="settingsSalaryDay" class="input" type="number" min="1" max="31" inputmode="numeric" placeholder="27">
           </div>
@@ -1648,6 +1844,14 @@ dialog::backdrop{
         </div>
 
         <div class="card" style="padding:18px;margin-top:12px">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+            <div><strong>التزاماتي الشهرية</strong><div style="color:var(--muted);font-size:10px;margin-top:4px">مثل الإيجار، الإنترنت، الاشتراكات والفواتير</div></div>
+            <button type="button" class="small-btn primary" data-onboard="add-commitment">+ إضافة</button>
+          </div>
+          <div id="settingsCommitments" class="list" style="margin-top:10px"></div>
+        </div>
+
+        <div class="card" style="padding:18px;margin-top:12px">
 
           <strong>بيانات وِزنة</strong>
 
@@ -1656,7 +1860,12 @@ dialog::backdrop{
             ما فيه تسجيل دخول ولا يتم إرسال بياناتك لأي مكان.
           </p>
 
-          <button type="button" class="btn btn-danger" style="width:100%" data-action="reset-data">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+            <button type="button" class="btn btn-secondary" data-action="backup">📤 تصدير</button>
+            <button type="button" class="btn btn-secondary" data-action="restore">📥 استعادة</button>
+          </div>
+
+          <button type="button" class="btn btn-danger" style="width:100%;margin-top:8px" data-action="reset-data">
             حذف كل بياناتي
           </button>
 
@@ -1731,6 +1940,53 @@ dialog::backdrop{
 
 
   <!-- =========================
+       SMS IMPORT
+  ========================== -->
+
+  <section id="smsImport" class="screen">
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">المصاريف تلقائيًا 📩</div>
+          <div class="page-subtitle">اربط وِزنة باختصارات iPhone مرة واحدة</div>
+        </div>
+        <button type="button" class="icon-btn" data-action="back-more">→</button>
+      </div>
+
+      <div class="scroll-area">
+        <div class="card sms-hero">
+          <div class="sms-badge">● بدون ربط بنكي</div>
+          <div class="sms-hero-title">خل وِزنة تسجل مصاريفك تلقائيًا</div>
+          <div class="sms-hero-sub">عند وصول رسالة شراء من البنك، اختصار iPhone يمرر نص الرسالة لوِزنة، ووِزنة تستخرج المبلغ واسم التاجر وتسجل العملية.</div>
+          <button type="button" class="sms-open-btn" data-action="open-shortcuts">⚡ افتح الاختصارات الآن</button>
+          <div class="sms-note">الزر يفتح تطبيق «الاختصارات» نفسه، وليس Safari.</div>
+        </div>
+
+        <div class="card sms-card">
+          <div class="sms-step"><div class="sms-num">1</div><div><b>افتح الاختصارات</b><div class="page-subtitle">اضغط الزر فوق، أو افتح تطبيق الاختصارات يدويًا.</div></div></div>
+          <div class="sms-step"><div class="sms-num">2</div><div><b>التشغيل الآلي ← رسالة</b><div class="page-subtitle">أنشئ أتمتة عند وصول رسالة، واستخدم كلمة مثل «شراء» إذا ما تقدر تحدد مرسل البنك.</div></div></div>
+          <div class="sms-step"><div class="sms-num">3</div><div><b>مرر نص الرسالة</b><div class="page-subtitle">استخدم «الحصول على النص من الإدخال» ثم «ترميز URL».</div></div></div>
+          <div class="sms-step"><div class="sms-num">4</div><div><b>افتح رابط وِزنة</b><div class="page-subtitle">استخدم رابط Wiznah2 التالي، ثم أضف النص المشفّر بعد <b>wiznah_sms=</b>:</div>
+            <div class="sms-code">https://i8ztr.github.io/Wiznah2/?wiznah_sms=TEXT</div>
+          </div></div>
+          <div class="sms-step"><div class="sms-num">5</div><div><b>أوقف «اسأل قبل التشغيل»</b><div class="page-subtitle">عشان الأتمتة تشتغل تلقائيًا عند وصول رسالة مطابقة.</div></div></div>
+        </div>
+
+        <div class="card sms-card">
+          <div style="font-weight:900;margin-bottom:8px">مثال للاختبار 🧪</div>
+          <div class="sms-code">تمت عملية شراء بمبلغ 45.00 SAR لدى STARBUCKS</div>
+          <div style="color:var(--muted);font-size:13px;line-height:1.7;margin-top:10px">المفروض وِزنة تستخرج <b style="color:white">45 ر.س</b> و <b style="color:white">STARBUCKS</b> وتسجلها كمصروف.</div>
+        </div>
+
+        <div class="card sms-card">
+          <div style="font-weight:900">🔐 خصوصيتك</div>
+          <div style="color:var(--muted);font-size:13px;line-height:1.8;margin-top:7px">وِزنة لا تحتاج كلمة مرور البنك أو تسجيل الدخول للبنك. البيانات التي تصل من الرسالة تُحفظ محليًا في وِزنة.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================
        MODAL
   ========================== -->
 
@@ -1753,13 +2009,16 @@ dialog::backdrop{
    لا يوجد inline onclick
 ========================================================= */
 
-const STORAGE_KEY = "wiznah_v11";
+const STORAGE_KEY = "wiznah_v20";
+const LEGACY_STORAGE_KEY = "wiznah_v11";
+const LEGACY_V18_KEY = "wiznah_v18";
 
 const DEFAULT_STATE = {
   onboarded:false,
   onboardStep:0,
   salary:0,
   salaryDay:27,
+  extraIncome:0,
   commitments:[],
   debts:[],
   budgets:[],
@@ -1783,17 +2042,18 @@ let toastTimer = null;
 
 function loadState(){
   try{
-    const saved = localStorage.getItem(STORAGE_KEY);
-
-    if(!saved){
-      return structuredClone(DEFAULT_STATE);
-    }
+    let saved = localStorage.getItem(STORAGE_KEY);
+    let migrated = false;
+    if(!saved){ saved=localStorage.getItem(LEGACY_V18_KEY); migrated=!!saved; }
+    if(!saved){ saved=localStorage.getItem(LEGACY_STORAGE_KEY); migrated=!!saved; }
+    if(!saved){ return structuredClone(DEFAULT_STATE); }
 
     const parsed = JSON.parse(saved);
 
     return {
       ...structuredClone(DEFAULT_STATE),
       ...parsed,
+      extraIncome:Number(parsed.extraIncome||0),
       commitments:Array.isArray(parsed.commitments) ? parsed.commitments : [],
       debts:Array.isArray(parsed.debts) ? parsed.debts : [],
       budgets:Array.isArray(parsed.budgets) ? parsed.budgets : [],
@@ -1861,18 +2121,13 @@ function daysUntilSalary(){
 
   const now = new Date();
 
-  let target = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    Number(state.salaryDay) || 27
-  );
+  const requestedDay = Math.min(31, Math.max(1, Number(state.salaryDay) || 27));
+  const lastDayThisMonth = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+  let target = new Date(now.getFullYear(), now.getMonth(), Math.min(requestedDay,lastDayThisMonth));
 
   if(target <= now){
-    target = new Date(
-      now.getFullYear(),
-      now.getMonth()+1,
-      Number(state.salaryDay) || 27
-    );
+    const nextMonthLastDay = new Date(now.getFullYear(), now.getMonth()+2, 0).getDate();
+    target = new Date(now.getFullYear(), now.getMonth()+1, Math.min(requestedDay,nextMonthLastDay));
   }
 
   return Math.max(
@@ -1933,11 +2188,9 @@ function monthDebtPayments(){
 }
 
 function monthSavings(){
-
-  return state.transactions
-    .filter(t=>t.type==="saving" && isThisMonth(t.date))
-    .reduce((sum,t)=>sum + Number(t.amount || 0),0);
+  return state.transactions.filter(t=>(t.type==="saving"||t.type==="saving_withdrawal")&&isThisMonth(t.date)).reduce((sum,t)=>sum+(t.type==="saving"?Number(t.amount||0):-Number(t.amount||0)),0);
 }
+function totalSaved(){ return state.savingsPlans.reduce((sum,p)=>sum+Math.max(0,Number(p.saved||0)),0); }
 
 function budgetSpent(budgetId){
 
@@ -1970,18 +2223,49 @@ function safetyBuffer(){
   );
 }
 
+function monthExtraIncome(){
+  return state.transactions.filter(t=>t.type==="income"&&isThisMonth(t.date)).reduce((s,t)=>s+Number(t.amount||0),0);
+}
+function currentIncome(){ return Number(state.salary||0)+Number(state.extraIncome||0)+monthExtraIncome(); }
+function dailySafeSpend(){
+  const days=Math.max(1,daysUntilSalary());
+  return Math.max(0,safeAvailable()/days);
+}
+function spendingByBudget(){
+  return state.budgets.map(b=>({name:b.name,icon:b.icon,spent:budgetSpent(b.id)})).filter(x=>x.spent>0).sort((a,b)=>b.spent-a.spent);
+}
+function totalExpensesByCategory(){ return spendingByBudget().reduce((s,x)=>s+x.spent,0); }
+
 function availableToSave(){
 
   const salary = Number(state.salary) || 0;
+  const recurringIncome = salary + Number(state.extraIncome || 0);
 
   const result =
-    salary
+    recurringIncome
     - monthlyCommitments()
     - monthlyDebtObligation()
     - plannedBudgetTotal()
     - safetyBuffer();
 
   return Math.max(0,result);
+}
+
+function cashAvailable(){
+
+  const salary = currentIncome();
+
+  if(!salary){
+    return 0;
+  }
+
+  // هذا هو المال المتبقي فعليًا من راتب الشهر بعد الحركات الحقيقية فقط.
+  // الادخار هنا حركة مالية حقيقية: عندما تدخر 500، ينخفض المتاح 500.
+  const spent = monthExpenses();
+  const debtsPaid = monthDebtPayments();
+  const savedNet = monthSavings();
+
+  return Math.max(0, salary - spent - debtsPaid - savedNet);
 }
 
 function safeAvailable(){
@@ -1992,20 +2276,16 @@ function safeAvailable(){
     return 0;
   }
 
-  const spent = monthExpenses();
+  const currentCash = cashAvailable();
   const debtsPaid = monthDebtPayments();
-  const saved = monthSavings();
 
   /*
-    نعتبر الراتب هو نقطة بداية الدورة.
-    الالتزامات والأقساط المستقبلية يتم حجزها فقط إذا لم تُدفع.
+    المتاح الآمن = المال الفعلي المتبقي بعد المصروفات والادخار
+    ناقص الالتزامات والأقساط والمحافظ المتبقية + هامش أمان.
   */
 
   const remainingSalary =
-    salary
-    - spent
-    - debtsPaid
-    - saved
+    currentCash
     - monthlyCommitments();
 
   const remainingDebt =
@@ -2146,6 +2426,59 @@ function getInsight(){
 
 
 /* =========================================================
+   SMS IMPORT
+========================================================= */
+function normalizeDigits(text){
+  return String(text||'').replace(/[٠-٩]/g,d=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
+}
+
+function parseBankSMS(raw){
+  const text=normalizeDigits(String(raw||'').replace(/\+/g,' '));
+  const amountPatterns=[
+    /(?:SAR|ر\.?س|ريال)\s*([0-9]+(?:[.,][0-9]{1,2})?)/i,
+    /([0-9]+(?:[.,][0-9]{1,2})?)\s*(?:SAR|ر\.?س|ريال)/i,
+    /(?:مبلغ|بقيمة|بمبلغ|amount)\s*[:：]?\s*([0-9]+(?:[.,][0-9]{1,2})?)/i
+  ];
+  let amount=0;
+  for(const re of amountPatterns){const m=text.match(re);if(m){amount=Number(String(m[1]).replace(/,/g,''));if(amount>0)break;}}
+  if(!amount){
+    const nums=[...text.matchAll(/\b\d{1,6}(?:[.,]\d{1,2})?\b/g)].map(m=>Number(m[0].replace(',','.'))).filter(n=>n>0&&n<100000);
+    amount=nums.length?nums[nums.length-1]:0;
+  }
+  let merchant='عملية بنكية';
+  const merchantMatch=text.match(/(?:لدى|عند|في|to|at)\s*[:：-]?\s*([^\n،,|؛;]+)/i);
+  if(merchantMatch) merchant=merchantMatch[1].trim().replace(/(?:رصيد|متبقي|balance).*$/i,'').trim();
+  if(merchant.length>45) merchant=merchant.slice(0,45).trim();
+  return {amount,merchant,raw:text};
+}
+
+function importSMSFromURL(){
+  const params=new URLSearchParams(location.search);
+  const encoded=params.get('wiznah_sms');
+  if(!encoded) return;
+  try{
+    const parsed=parseBankSMS(encoded);
+    if(parsed.amount<=0){toast('ما قدرت أتعرف على مبلغ الرسالة','bad');return;}
+    const fingerprint=btoa(unescape(encodeURIComponent(parsed.raw))).slice(0,120);
+    const exists=state.transactions.some(t=>t.source==='sms'&&t.fingerprint===fingerprint);
+    if(exists){toast('هذه العملية مسجلة مسبقًا','bad');return;}
+    state.transactions.push({id:id(),type:'expense',amount:parsed.amount,name:parsed.merchant,budgetId:state.budgets[0]?.id||'',date:Date.now(),source:'sms',fingerprint});
+    saveState();
+    renderCurrentPage();
+    toast(`تم تسجيل ${money(parsed.amount)} ر.س تلقائيًا 🎉`,'good');
+    history.replaceState({},'',location.pathname);
+  }catch(e){console.error(e);toast('تعذر استيراد الرسالة','bad');}
+}
+
+function openShortcuts(){
+  try{
+    window.location.href='shortcuts://';
+  }catch(e){
+    toast('افتح تطبيق الاختصارات يدويًا من جهازك','bad');
+  }
+}
+
+/* =========================================================
    NAVIGATION
 ========================================================= */
 
@@ -2181,6 +2514,7 @@ function renderCurrentPage(){
   renderDebts();
   renderSavings();
   renderActivity();
+  renderAnalysis();
   renderSettings();
 
   if(currentBudgetId){
@@ -2367,12 +2701,10 @@ function renderOnboardingCommitments(){
         <div class="row-sub">${money(item.amount)} ر.س شهريًا</div>
       </div>
 
-      <button type="button"
-        class="small-btn danger"
-        data-action="delete-commitment"
-        data-id="${item.id}">
-        حذف
-      </button>
+      <div class="row-actions">
+        <button type="button" class="small-btn primary" data-action="edit-commitment" data-id="${item.id}">تعديل</button>
+        <button type="button" class="small-btn danger" data-action="delete-commitment" data-id="${item.id}">حذف</button>
+      </div>
 
     </div>
   `).join("");
@@ -3161,7 +3493,27 @@ function renderBudgetDetail(){
   `;
 }
 
-function addExpense(budgetId){
+function quickExpense(){
+  if(!state.budgets.length){toast("أضف محفظة أولًا عشان نعرف وين نحط المصروف","bad");showPage("budgets");return;}
+  addExpense(state.budgets[0].id,true);
+}
+function purchaseCheck(){
+  openModal(`<div class="modal-head"><div class="modal-title">أقدر أشتري؟ 🛍️</div><button type="button" class="close-btn" data-action="close-modal">×</button></div>
+  <div class="form-group"><label class="label">وش ناوي تشتري؟</label><input id="purchaseName" class="input" placeholder="مثال: سماعة"></div>
+  <div class="form-group"><label class="label">السعر</label><input id="purchaseAmount" class="input" type="number" inputmode="decimal" placeholder="700"></div>
+  <div id="purchaseResult" style="margin:10px 0"></div>
+  <div class="modal-actions"><button type="button" class="btn btn-secondary" data-action="close-modal">إلغاء</button><button type="button" class="btn btn-primary" data-action="check-purchase">احسب</button></div>`);
+}
+function checkPurchase(){
+  const name=document.getElementById("purchaseName")?.value.trim()||"الشراء"; const amount=Number(document.getElementById("purchaseAmount")?.value||0); const out=document.getElementById("purchaseResult"); if(!out||amount<=0){toast("اكتب السعر","bad");return;}
+  const safe=safeAvailable(); const after=safe-amount; let html;
+  if(after>=dailySafeSpend()*3){html=`<div class="plan-analysis good">🟢 <strong>تقدر تشتري ${escapeHTML(name)}.</strong><br>بعد الشراء يبقى لك ${money(after)} ر.س من المتاح الآمن.</div>`}
+  else if(after>=0){html=`<div class="plan-analysis warn">🟡 <strong>ممكن، لكن انتبه.</strong><br>بعد الشراء يبقى لك ${money(after)} ر.س، وهذا يقلل مساحة الصرف قبل الراتب.</div>`}
+  else{html=`<div class="plan-analysis bad">🔴 <strong>ما أنصحك الآن.</strong><br>السعر أعلى من المتاح الآمن بمقدار ${money(Math.abs(after))} ر.س.</div>`}
+  out.innerHTML=html;
+}
+
+function addExpense(budgetId,quick=false){
 
   const budget =
     state.budgets.find(x=>x.id===budgetId);
@@ -3179,6 +3531,11 @@ function addExpense(budgetId){
         ×
       </button>
 
+    </div>
+
+    <div class="form-group">
+      <label class="label">المحفظة</label>
+      <select id="expenseBudget" class="input">${state.budgets.map(b=>`<option value="${b.id}" ${b.id===budgetId?"selected":""}>${escapeHTML(b.icon)} ${escapeHTML(b.name)}</option>`).join("")}</select>
     </div>
 
     <div class="form-group">
@@ -3218,6 +3575,7 @@ function addExpense(budgetId){
 
 function saveExpense(budgetId){
 
+  budgetId=document.getElementById("expenseBudget")?.value || budgetId;
   const name =
     document.getElementById("expenseName")?.value.trim();
 
@@ -3317,16 +3675,7 @@ function openSavingForm(idValue=null){
         placeholder="مثال: 6000">
     </div>
 
-    <div class="form-group">
-      <label class="label">المبلغ المدخر حاليًا</label>
-
-      <input id="savingSaved"
-        class="input"
-        type="number"
-        inputmode="decimal"
-        value="${item?.saved || 0}"
-        placeholder="0">
-    </div>
+    ${item ? `<div class="card" style="padding:12px;margin-bottom:16px;background:rgba(53,211,153,.06)"><div style="color:var(--muted);font-size:11px">المدخر حاليًا</div><div style="font-size:22px;font-weight:950;margin-top:4px">${money(item.saved)} ر.س</div><div style="color:var(--muted);font-size:10px;margin-top:4px">غيّر المبلغ من أزرار الادخار والسحب حتى تبقى الحركة مسجلة.</div></div>` : `<div class="form-group"><label class="label">مبلغ بداية للهدف <span style="color:var(--muted)">(اختياري)</span></label><input id="savingInitial" class="input" type="number" inputmode="decimal" min="0" value="0" placeholder="0"><div class="helper">سيُحجز هذا المبلغ من المتاح عند إنشاء الهدف.</div></div>`}
 
     <div class="form-group">
       <label class="label">متى تحتاج المبلغ؟</label>
@@ -3370,78 +3719,27 @@ function openSavingForm(idValue=null){
 }
 
 function saveSaving(){
-
-  const name =
-    document.getElementById("savingName")?.value.trim();
-
-  const target =
-    Number(document.getElementById("savingTarget")?.value || 0);
-
-  const saved =
-    Number(document.getElementById("savingSaved")?.value || 0);
-
-  const deadline =
-    document.getElementById("savingDeadline")?.value;
-
-  if(!name){
-    toast("اكتب اسم الهدف","bad");
-    return;
-  }
-
-  if(target<=0){
-    toast("اكتب مبلغ الهدف","bad");
-    return;
-  }
-
-  if(saved<0){
-    toast("المبلغ المدخر غير صحيح","bad");
-    return;
-  }
-
-  if(!deadline){
-    toast("حدد موعد الهدف","bad");
-    return;
-  }
-
-  const date = new Date(deadline);
-
-  if(date <= new Date()){
-    toast("اختار موعدًا قادمًا","bad");
-    return;
-  }
-
+  const name=document.getElementById("savingName")?.value.trim();
+  const target=Number(document.getElementById("savingTarget")?.value||0);
+  const deadline=document.getElementById("savingDeadline")?.value;
+  const initial=editingId?0:Math.max(0,Number(document.getElementById("savingInitial")?.value||0));
+  if(!name){toast("اكتب اسم الهدف","bad");return;}
+  if(target<=0){toast("اكتب مبلغ الهدف","bad");return;}
+  if(!deadline){toast("حدد موعد الهدف","bad");return;}
+  const d=new Date(`${deadline}T23:59:59`);
+  if(Number.isNaN(d.getTime())||d<=new Date()){toast("اختار موعدًا قادمًا","bad");return;}
+  if(initial>safeAvailable()){toast(`المتاح الآمن ${money(safeAvailable())} ر.س فقط`,"bad");return;}
   if(editingId){
-
-    const item =
-      state.savingsPlans.find(x=>x.id===editingId);
-
-    if(item){
-      item.name=name;
-      item.target=target;
-      item.saved=saved;
-      item.deadline=deadline;
-      item.icon=selectedIcon;
-    }
-
+    const item=state.savingsPlans.find(x=>x.id===editingId);
+    if(!item)return;
+    if(target<Number(item.saved||0)){toast("الهدف لا يمكن أن يكون أقل من المدخر الحالي","bad");return;}
+    item.name=name; item.target=target; item.deadline=deadline; item.icon=selectedIcon;
   }else{
-
-    state.savingsPlans.push({
-      id:id(),
-      name,
-      target,
-      saved,
-      deadline,
-      icon:selectedIcon,
-      createdAt:Date.now()
-    });
-
+    const planId=id();
+    state.savingsPlans.push({id:planId,name,target,saved:initial,deadline,icon:selectedIcon,createdAt:Date.now()});
+    if(initial>0) state.transactions.push({id:id(),type:"saving",amount:initial,name:`ادخار - ${name}`,savingsPlanId:planId,date:Date.now()});
   }
-
-  saveState();
-  closeModal();
-  renderCurrentPage();
-
-  toast("تم حفظ خطة الادخار 🎯","good");
+  saveState();closeModal();renderCurrentPage();toast(editingId?"تم تحديث الهدف 🎯":"تم إنشاء هدف الادخار 🎯","good");
 }
 
 function savingsAnalysis(plan){
@@ -3477,29 +3775,70 @@ function savingsAnalysis(plan){
   };
 }
 
-function deleteSaving(planId){
-
-  openConfirm(
-    "حذف الهدف؟",
-    "سيتم حذف خطة الادخار هذه.",
-    ()=>{
-      state.savingsPlans =
-        state.savingsPlans.filter(
-          x=>x.id!==planId
-        );
-
-      saveState();
-      renderCurrentPage();
-
-      toast("تم حذف الهدف");
-    }
-  );
+function openSavingMoneyForm(mode="deposit",preselectedId=null){
+  if(!state.savingsPlans.length){toast("أضف هدف ادخار أولًا","bad");return;}
+  const title=mode==="deposit"?"إضافة مبلغ للادخار":"سحب مبلغ من الادخار";
+  const action=mode==="deposit"?"confirm-saving-deposit":"confirm-saving-withdraw";
+  openModal(`<div class="modal-head"><div class="modal-title">${title}</div><button type="button" class="close-btn" data-action="close-modal">×</button></div>
+  <div class="form-group"><label class="label">الهدف</label><select id="savingMoneyPlan" class="input">${state.savingsPlans.map(p=>`<option value="${p.id}" ${p.id===preselectedId?"selected":""}>${escapeHTML(p.icon)} ${escapeHTML(p.name)} — ${money(p.saved)} ر.س</option>`).join("")}</select></div>
+  <div class="form-group"><label class="label">المبلغ</label><input id="savingMoneyAmount" class="input" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="500"></div>
+  <div class="modal-actions"><button type="button" class="btn btn-secondary" data-action="close-modal">إلغاء</button><button type="button" class="btn btn-primary" data-action="${action}">تأكيد</button></div>`);
+}
+function applySavingMoney(mode){
+  const plan=state.savingsPlans.find(x=>x.id===document.getElementById("savingMoneyPlan")?.value);
+  const amount=Number(document.getElementById("savingMoneyAmount")?.value||0);
+  if(!plan){toast("اختر هدفًا صحيحًا","bad");return;} if(amount<=0){toast("اكتب مبلغًا صحيحًا","bad");return;}
+  if(mode==="deposit"){
+    const remaining=Math.max(0,Number(plan.target)-Number(plan.saved||0)); const safe=safeAvailable();
+    if(amount>remaining){toast(`المتبقي للهدف ${money(remaining)} ر.س فقط`,"bad");return;} if(amount>safe){toast(`المتاح الآمن ${money(safe)} ر.س فقط`,"bad");return;}
+    plan.saved=Number(plan.saved||0)+amount; state.transactions.push({id:id(),type:"saving",amount,name:`ادخار - ${plan.name}`,savingsPlanId:plan.id,date:Date.now()});
+    saveState();closeModal();renderCurrentPage();toast(`تم ادخار ${money(amount)} ر.س — المتاح الآن ${money(cashAvailable())} ر.س 💰`,"good");return;
+  }
+  if(amount>Number(plan.saved||0)){toast(`رصيد الهدف ${money(plan.saved||0)} ر.س فقط`,"bad");return;}
+  plan.saved=Number(plan.saved||0)-amount; state.transactions.push({id:id(),type:"saving_withdrawal",amount,name:`سحب من الادخار - ${plan.name}`,savingsPlanId:plan.id,date:Date.now()});
+  saveState();closeModal();renderCurrentPage();toast(`تم إرجاع ${money(amount)} ر.س — المتاح الآن ${money(cashAvailable())} ر.س ↩️`,"good");
 }
 
+function deleteSaving(planId){
+  const plan=state.savingsPlans.find(x=>x.id===planId);
+  if(!plan)return;
+  const saved=Number(plan.saved||0);
+  const message=saved>0
+    ? `سيتم حذف الهدف وإرجاع ${money(saved)} ر.س إلى المتاح. لن تُحذف الفلوس من حساب وِزنة.`
+    : "سيتم حذف خطة الادخار هذه.";
+  openConfirm("حذف الهدف؟",message,()=>{
+    if(saved>0){
+      state.transactions.push({id:id(),type:"saving_withdrawal",amount:saved,name:`إرجاع ادخار - ${plan.name}`,savingsPlanId:plan.id,date:Date.now()});
+    }
+    state.savingsPlans=state.savingsPlans.filter(x=>x.id!==planId);
+    saveState();renderCurrentPage();toast(saved>0?"تم حذف الهدف وإرجاع المبلغ للمتاح":"تم حذف الهدف");
+  });
+}
 
 /* =========================================================
    RENDER HOME
 ========================================================= */
+
+function renderHomePulse(){
+  const el=document.getElementById("homePulse");
+  if(!el) return;
+  const safe=safeAvailable();
+  const daily=dailySafeSpend();
+  const today=new Date();
+  const todaySpent=state.transactions.filter(t=>t.type==="expense" && new Date(t.date).toDateString()===today.toDateString()).reduce((a,t)=>a+Number(t.amount||0),0);
+  const recent=state.transactions.filter(t=>t.type==="expense").sort((a,b)=>Number(b.date)-Number(a.date))[0];
+  let icon="✨", title="وِزنة معك اليوم", message="وضعك تحت السيطرة. خل مشترياتك الكبيرة تمر على وِزنة أول.";
+  let cls="good";
+  if(!state.salary){ icon="👋"; title="خلنا نبدأ صح"; message="أدخل راتبك أول، وبعدها أعطيك رقم الصرف الآمن يوميًا."; }
+  else if(safe<=0){ icon="🛑"; title="خفف الصرف اليوم"; message=`المتاح الآمن وصل للصفر. باقي ${daysUntilSalary()} يوم على الراتب، فخلنا نوقف المشتريات غير الضرورية.`; cls="bad"; }
+  else if(todaySpent>daily && daily>0){ icon="⚠️"; title="اليوم صرفت فوق المعدل"; message=`صرفك اليوم ${money(todaySpent)} ر.س، بينما الآمن تقريبًا ${money(daily)} ر.س. تقدر تعوّض بهدوء الأيام الجاية.`; cls="warn"; }
+  else if(state.savingsPlans.length){
+    const plan=state.savingsPlans[0]; const target=Number(plan.target||0); const saved=Number(plan.saved||0); const pct=target?Math.round(saved/target*100):0;
+    icon="🎯"; title=`هدفك ${plan.name}`; message=`وصلت ${pct}% من الهدف. كل ${money(Math.max(0,daily*0.2))} ر.س توفرها يوميًا تقربك منه.`;
+  } else if(recent){ icon="💜"; title="نبضة من وِزنة"; message=`آخر مصروف مسجل: ${recent.name||"مصروف"} — ${money(recent.amount)} ر.س. لا تخلي المصاريف الصغيرة تتراكم.`; }
+  el.className=`card wiz-pulse ${cls}`;
+  el.innerHTML=`<div class="wiz-pulse-top"><div><div class="wiz-pulse-title">${title}</div><div class="wiz-pulse-sub">تحديث حي حسب حركاتك الحالية</div></div><div class="wiz-pulse-badge">${icon}</div></div><div class="wiz-pulse-main"><div class="wiz-pulse-stat"><span>صرفك اليوم</span><strong>${money(todaySpent)} <small style="font-size:9px;color:var(--muted)">ر.س</small></strong></div><div class="wiz-pulse-stat"><span>الآمن لليوم</span><strong>${money(daily)} <small style="font-size:9px;color:var(--muted)">ر.س</small></strong></div></div><div class="wiz-pulse-message">${message}</div>`;
+}
 
 function renderHome(){
 
@@ -3517,6 +3856,7 @@ function renderHome(){
 
   document.getElementById("monthlyDebtHome").textContent =
     money(monthlyDebtObligation());
+  const dailyHome=document.getElementById("dailySafeHome"); if(dailyHome) dailyHome.textContent=money(dailySafeSpend());
 
   document.getElementById("salaryHome").textContent =
     money(state.salary);
@@ -3531,6 +3871,8 @@ function renderHome(){
 
   document.getElementById("insightText").textContent =
     insight.text;
+
+  renderHomePulse();
 
   const score = financialScore();
 
@@ -3563,6 +3905,13 @@ function renderHome(){
 
   document.getElementById("greetingSmall").textContent =
     greeting;
+  const greetingName=document.getElementById("greetingName");
+  if(greetingName){
+    const scoreNow=financialScore();
+    greetingName.textContent = state.salary
+      ? (scoreNow.score>=85 ? "أمورك المالية ماشية 👌" : scoreNow.score>=65 ? "خلنا نضبطها سوا 💜" : "خلنا ننقذ الشهر سوا 🛟")
+      : "وضعك المالي 👋";
+  }
 
   renderHomeBudgets();
   renderHomeGoal();
@@ -4015,8 +4364,11 @@ function renderSavings(){
   const availableValue =
     availableToSave();
 
-  available.textContent =
-    money(availableValue);
+  available.textContent = money(availableValue);
+
+  const cashNow = document.getElementById("cashAvailableNow");
+  if(cashNow) cashNow.textContent = money(cashAvailable());
+  const totalSavedEl=document.getElementById("totalSavedNow"); if(totalSavedEl) totalSavedEl.textContent=money(totalSaved());
 
   document.getElementById("savingHeroDesc").textContent =
     availableValue>0
@@ -4128,22 +4480,11 @@ function renderSavings(){
             ${analysisText}
           </div>
 
-          <div class="row-actions" style="margin-top:12px">
-
-            <button type="button"
-              class="small-btn primary"
-              data-action="edit-saving"
-              data-id="${plan.id}">
-              تعديل
-            </button>
-
-            <button type="button"
-              class="small-btn danger"
-              data-action="delete-saving"
-              data-id="${plan.id}">
-              حذف
-            </button>
-
+          <div class="row-actions" style="margin-top:12px;flex-wrap:wrap">
+            <button type="button" class="small-btn primary" data-action="deposit-saving-plan" data-id="${plan.id}">+ ادخار</button>
+            <button type="button" class="small-btn" data-action="withdraw-saving-plan" data-id="${plan.id}">سحب</button>
+            <button type="button" class="small-btn" data-action="edit-saving" data-id="${plan.id}">تعديل</button>
+            <button type="button" class="small-btn danger" data-action="delete-saving" data-id="${plan.id}">حذف</button>
           </div>
 
         </div>
@@ -4155,6 +4496,15 @@ function renderSavings(){
 /* =========================================================
    ACTIVITY
 ========================================================= */
+
+function renderAnalysis(){
+  const totalEl=document.getElementById("analysisTotal"); const dailyEl=document.getElementById("analysisDaily"); const list=document.getElementById("analysisList");
+  if(!totalEl||!list)return;
+  const rows=spendingByBudget(); const total=rows.reduce((s,x)=>s+x.spent,0);
+  totalEl.textContent=`${money(total)} ر.س`;
+  dailyEl.textContent=`المتاح الآمن اليومي: ${money(dailySafeSpend())} ر.س تقريبًا`;
+  list.innerHTML=rows.length?rows.map(x=>{const pct=total?Math.round(x.spent/total*100):0;return `<div class="card plan-card"><div style="display:flex;align-items:center;gap:10px"><div class="row-icon">${x.icon}</div><div class="row-main"><div class="row-name">${escapeHTML(x.name)}</div><div class="row-sub">${money(x.spent)} ر.س · ${pct}% من المصروف</div></div><strong>${pct}%</strong></div><div class="progress"><i style="width:${pct}%"></i></div></div>`}).join(""):`<div class="empty card"><div class="empty-icon">📊</div><strong>لسه ما عندي مصروفات كفاية</strong>سجل مصروفاتك وبيطلع لك التحليل هنا.</div>`;
+}
 
 function renderActivity(){
 
@@ -4243,6 +4593,18 @@ function renderActivity(){
 }
 
 
+function openIncomeForm(){
+  openModal(`<div class="modal-head"><div class="modal-title">تسجيل دخل 💵</div><button type="button" class="close-btn" data-action="close-modal">×</button></div><div class="form-group"><label class="label">نوع الدخل</label><input id="incomeName" class="input" placeholder="مثال: عمولة / مكافأة / تحويل"></div><div class="form-group"><label class="label">المبلغ</label><input id="incomeAmount" class="input" type="number" inputmode="decimal" min="0" placeholder="مثال: 500"></div><div class="modal-actions"><button type="button" class="btn btn-secondary" data-action="close-modal">إلغاء</button><button type="button" class="btn btn-primary" data-action="save-income">إضافة</button></div>`);
+}
+
+function saveIncome(){
+  const name=document.getElementById("incomeName")?.value.trim()||"دخل إضافي";
+  const amount=Number(document.getElementById("incomeAmount")?.value||0);
+  if(amount<=0){toast("اكتب مبلغ دخل صحيح","bad");return;}
+  state.transactions.push({id:id(),type:"income",amount,name,date:Date.now()});
+  saveState();closeModal();renderCurrentPage();toast(`تمت إضافة ${money(amount)} ر.س للدخل 💵`,"good");
+}
+
 /* =========================================================
    SETTINGS
 ========================================================= */
@@ -4269,6 +4631,19 @@ function renderSettings(){
   if(document.activeElement!==day){
     day.value = state.salaryDay || 27;
   }
+  const extra=document.getElementById("settingsExtraIncome");
+  if(extra && document.activeElement!==extra){ extra.value = state.extraIncome || ""; }
+  renderSettingsCommitments();
+}
+
+function renderSettingsCommitments(){
+  const el=document.getElementById("settingsCommitments");
+  if(!el)return;
+  if(!state.commitments.length){
+    el.innerHTML=`<div class="empty" style="padding:18px 10px"><div class="empty-icon" style="width:48px;height:48px;font-size:22px">🧾</div><strong>ما عندك التزامات مضافة</strong><span>أضف الثابت منها عشان يكون المتاح الآمن أدق.</span></div>`;
+    return;
+  }
+  el.innerHTML=state.commitments.map(item=>`<div class="card row-card"><div class="row-icon">🧾</div><div class="row-main"><div class="row-name">${escapeHTML(item.name)}</div><div class="row-sub">${money(item.amount)} ر.س شهريًا</div></div><div class="row-actions"><button type="button" class="small-btn primary" data-action="edit-commitment" data-id="${item.id}">تعديل</button><button type="button" class="small-btn danger" data-action="delete-commitment" data-id="${item.id}">حذف</button></div></div>`).join("");
 }
 
 function saveSettings(){
@@ -4291,6 +4666,7 @@ function saveSettings(){
 
   state.salary = salary;
   state.salaryDay = day;
+  state.extraIncome = Number(document.getElementById("settingsExtraIncome")?.value||0);
 
   saveState();
   renderCurrentPage();
@@ -4383,8 +4759,7 @@ function removeTyping(){
 
 function assistantAnswer(question){
 
-  const q =
-    question.toLowerCase().trim();
+  const q = question.toLowerCase().trim().replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/[٬,]/g,"").replace("٫",".");
 
   const safe =
     safeAvailable();
@@ -4632,6 +5007,24 @@ function toast(message,type=""){
    RESET
 ========================================================= */
 
+function backupData(){
+  const blob=new Blob([JSON.stringify({version:1,exportedAt:new Date().toISOString(),state},null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download=`wiznah-backup-${new Date().toISOString().slice(0,10)}.json`; a.click(); setTimeout(()=>URL.revokeObjectURL(url),1000); toast("تم حفظ النسخة الاحتياطية 💾","good");
+}
+function restoreData(){
+  const input=document.createElement("input"); input.type="file"; input.accept="application/json,.json";
+  input.onchange=()=>{const file=input.files?.[0]; if(!file)return; const reader=new FileReader(); reader.onload=()=>{try{const obj=JSON.parse(reader.result); const incoming=obj.state||obj; if(!incoming||typeof incoming!=="object")throw new Error(); state={...structuredClone(DEFAULT_STATE),...incoming};
+      state.salary=Number(state.salary||0);
+      state.salaryDay=Math.min(31,Math.max(1,Number(state.salaryDay||27)));
+      state.extraIncome=Number(state.extraIncome||0);
+      state.commitments=Array.isArray(state.commitments)?state.commitments:[];
+      state.debts=Array.isArray(state.debts)?state.debts:[];
+      state.budgets=Array.isArray(state.budgets)?state.budgets:[];
+      state.transactions=Array.isArray(state.transactions)?state.transactions:[];
+      state.savingsPlans=Array.isArray(state.savingsPlans)?state.savingsPlans:[];
+      saveState(); showPage(state.currentPage||"home"); toast("تم استرجاع بياناتك ✅","good");}catch(e){toast("ملف النسخة الاحتياطية غير صالح","bad")}}; reader.readAsText(file)}; input.click();
+}
+
 function resetData(){
 
   openConfirm(
@@ -4755,6 +5148,13 @@ document.addEventListener("click",event=>{
   if(!action) return;
 
 
+  if(action==="quick-expense"){ quickExpense(); return; }
+  if(action==="purchase-check"){ purchaseCheck(); return; }
+  if(action==="check-purchase"){ checkPurchase(); return; }
+  if(action==="analysis"){ showPage("analysis"); return; }
+  if(action==="backup"){ backupData(); return; }
+  if(action==="restore"){ restoreData(); return; }
+
   if(action==="settings"){
     showPage("settings");
     return;
@@ -4765,8 +5165,21 @@ document.addEventListener("click",event=>{
     return;
   }
 
+  if(action==="send-chat"){
+    sendChat();
+    return;
+  }
+
   if(action==="activity"){
     showPage("activity");
+    return;
+  }
+
+  if(action==="sms-import"){ showPage("smsImport"); return; }
+  if(action==="open-shortcuts"){ openShortcuts(); return; }
+
+  if(action==="quick-income"){
+    openIncomeForm();
     return;
   }
 
@@ -4830,6 +5243,11 @@ document.addEventListener("click",event=>{
     return;
   }
 
+  if(action==="edit-commitment"){
+    openCommitmentForm(target.dataset.id);
+    return;
+  }
+
   if(action==="edit-debt"){
     openDebtForm(target.dataset.id);
     return;
@@ -4854,10 +5272,6 @@ document.addEventListener("click",event=>{
         saveState();
         renderCurrentPage();
 
-        if(state.onboardStep===2){
-          renderOnboarding();
-        }
-
         toast("تم حذف القسط");
       }
     );
@@ -4880,6 +5294,13 @@ document.addEventListener("click",event=>{
     return;
   }
 
+  if(action==="add-saving-money"){openSavingMoneyForm("deposit");return;}
+  if(action==="withdraw-saving-money"){openSavingMoneyForm("withdraw");return;}
+  if(action==="deposit-saving-plan"){openSavingMoneyForm("deposit",target.dataset.id);return;}
+  if(action==="withdraw-saving-plan"){openSavingMoneyForm("withdraw",target.dataset.id);return;}
+  if(action==="confirm-saving-deposit"){applySavingMoney("deposit");return;}
+  if(action==="confirm-saving-withdraw"){applySavingMoney("withdraw");return;}
+
   if(action==="edit-saving"){
     openSavingForm(target.dataset.id);
     return;
@@ -4900,8 +5321,8 @@ document.addEventListener("click",event=>{
     return;
   }
 
-  if(action==="send-chat"){
-    sendChat();
+  if(action==="save-income"){
+    saveIncome();
     return;
   }
 
@@ -5018,15 +5439,9 @@ function start(){
 
 start();
 
-</script>
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js?v=25").catch(()=>{}));}
 
-
-<script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js").catch(() => {});
-  });
-}
+importSMSFromURL();
 </script>
 
 </body>
