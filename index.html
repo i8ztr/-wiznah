@@ -330,9 +330,35 @@ button{
 
 .home-scroll{
   flex:1;
-  overflow:hidden;
-  padding:8px 16px 12px;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-y;
+  padding:8px 16px 110px;
+  scrollbar-width:none;
 }
+
+.home-scroll::-webkit-scrollbar{display:none}
+
+.money-flow-card{
+  padding:16px;
+  margin-top:10px;
+  background:linear-gradient(145deg,rgba(139,92,246,.10),rgba(255,255,255,.025));
+}
+.money-flow-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.money-flow-title{font-size:15px;font-weight:950}
+.money-flow-sub{font-size:10px;color:var(--muted);margin-top:3px}
+.money-flow-badge{padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.055);font-size:10px;color:#d9d6e3}
+.money-flow-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.money-flow-item{padding:11px 12px;border-radius:16px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.045)}
+.money-flow-label{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.money-flow-value{font-size:17px;font-weight:950;margin-top:4px;letter-spacing:-.3px}
+.money-flow-value small{font-size:9px;color:var(--muted);font-weight:700}
+.money-flow-track{height:7px;border-radius:99px;background:#262631;overflow:hidden;margin-top:12px}
+.money-flow-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--purple),var(--purple2));transition:width .45s ease}
+.money-flow-note{display:flex;justify-content:space-between;gap:8px;margin-top:8px;font-size:10px;color:var(--muted)}
+.money-flow-note strong{color:#e9e6f2}
+
 
 .greeting{
   display:flex;
@@ -1450,6 +1476,41 @@ button{touch-action:manipulation}
         <div class="quick-actions-home" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
           <button type="button" class="btn btn-primary" style="min-height:44px" data-action="quick-expense">＋ تسجيل مصروف</button>
           <button type="button" class="btn btn-secondary" style="min-height:44px" data-action="purchase-check">🛍️ أقدر أشتري؟</button>
+        </div>
+
+        <div class="card money-flow-card" id="moneyFlowCard">
+          <div class="money-flow-head">
+            <div>
+              <div class="money-flow-title">راتبك وين راح؟ 💸</div>
+              <div class="money-flow-sub">صورة سريعة لهذا الشهر بدون تعقيد</div>
+            </div>
+            <div class="money-flow-badge" id="moneyFlowBadge">هذا الشهر</div>
+          </div>
+
+          <div class="money-flow-grid">
+            <div class="money-flow-item">
+              <div class="money-flow-label">💰 راتبك</div>
+              <div class="money-flow-value"><span id="flowSalary">0</span> <small>ر.س</small></div>
+            </div>
+            <div class="money-flow-item">
+              <div class="money-flow-label">💵 باقي راتبك</div>
+              <div class="money-flow-value"><span id="flowRemainingSalary">0</span> <small>ر.س</small></div>
+            </div>
+            <div class="money-flow-item">
+              <div class="money-flow-label">🛍️ صرف فعلي</div>
+              <div class="money-flow-value"><span id="flowSpent">0</span> <small>ر.س</small></div>
+            </div>
+            <div class="money-flow-item">
+              <div class="money-flow-label">🎯 ادخار</div>
+              <div class="money-flow-value"><span id="flowSaved">0</span> <small>ر.س</small></div>
+            </div>
+          </div>
+
+          <div class="money-flow-track"><div class="money-flow-fill" id="flowProgress" style="width:0%"></div></div>
+          <div class="money-flow-note">
+            <span>محجوز قادم: <strong id="flowReserved">0 ر.س</strong></span>
+            <span>آمن الآن: <strong id="flowSafe">0 ر.س</strong></span>
+          </div>
         </div>
 
         <div id="homePulse" class="card wiz-pulse good"></div>
@@ -3851,6 +3912,39 @@ function deleteSaving(planId){
    RENDER HOME
 ========================================================= */
 
+function salaryRemaining(){
+  const salary = Number(state.salary) || 0;
+  if(!salary) return 0;
+  return Math.max(0, salary - monthExpenses() - monthDebtPayments() - Math.max(0,monthSavings()));
+}
+
+function upcomingReserved(){
+  const debtPaid = monthDebtPayments();
+  const remainingDebt = Math.max(0, monthlyDebtObligation() - debtPaid);
+  return monthlyCommitments() + remainingDebt;
+}
+
+function renderMoneyFlow(){
+  const salary = Number(state.salary) || 0;
+  const spent = monthExpenses();
+  const saved = Math.max(0, monthSavings());
+  const remaining = salaryRemaining();
+  const reserved = upcomingReserved();
+  const safe = safeAvailable();
+
+  const set=(id,value)=>{const el=document.getElementById(id); if(el) el.textContent=money(value);};
+  set('flowSalary',salary);
+  set('flowRemainingSalary',remaining);
+  set('flowSpent',spent);
+  set('flowSaved',saved);
+  set('flowReserved',reserved);
+  set('flowSafe',safe);
+
+  const progress = salary ? Math.min(100, Math.round(((spent + Math.max(0,monthDebtPayments()) + saved) / salary) * 100)) : 0;
+  const bar=document.getElementById('flowProgress');
+  if(bar) bar.style.width=`${progress}%`;
+}
+
 function renderHomePulse(){
   const el=document.getElementById("homePulse");
   if(!el) return;
@@ -3904,6 +3998,7 @@ function renderHome(){
   document.getElementById("insightText").textContent =
     insight.text;
 
+  renderMoneyFlow();
   renderHomePulse();
 
   const score = financialScore();
@@ -5471,7 +5566,7 @@ function start(){
 
 start();
 
-if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js?v=25").catch(()=>{}));}
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js?v=34").catch(()=>{}));}
 
 importSMSFromURL();
 </script>
