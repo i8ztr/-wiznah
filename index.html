@@ -1329,6 +1329,38 @@ button{touch-action:manipulation}
   #home .ask-icon{width:36px;height:36px;font-size:18px}
 }
 
+/* V32 FINAL SCROLL FIX — one natural scroll per screen.
+   Body/app stay fixed; each active screen owns the vertical scroll. */
+.screen{
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  -webkit-overflow-scrolling:touch;
+  touch-action:pan-y;
+  overscroll-behavior-y:auto;
+}
+.screen.active{display:block !important;}
+.screen .page{
+  width:100%;
+  min-height:100%;
+  height:auto !important;
+  overflow:visible !important;
+}
+.screen .scroll-area{
+  height:auto !important;
+  max-height:none !important;
+  overflow:visible !important;
+  flex:none !important;
+}
+#home .page,
+#home .home-scroll{
+  height:auto !important;
+  min-height:100%;
+  overflow:visible !important;
+}
+#onboarding{
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+}
 </style>
 </head>
 
